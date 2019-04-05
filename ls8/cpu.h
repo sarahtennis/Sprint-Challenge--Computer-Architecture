@@ -19,8 +19,10 @@ enum alu_op
 {
   ALU_MUL,
   ALU_ADD,
-  ALU_CMP
-  // Add more here
+  ALU_CMP,
+  ALU_AND,
+  ALU_OR,
+  ALU_XOR
 };
 
 // Instructions

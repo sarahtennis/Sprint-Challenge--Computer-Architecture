@@ -95,16 +95,18 @@ void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value)
  */
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
+  // XOR NOT SHL SHR MOD
   switch (op)
   {
-  case ALU_MUL:
-    cpu->registers[regA] = (cpu->registers[regA] * cpu->registers[regB]) & 0xFF;
-    break;
   case ALU_ADD:
     cpu->registers[regA] = (cpu->registers[regA] + cpu->registers[regB]) & 0xFF;
     break;
-  // only handles equivalency currently
+  case ALU_AND:
+    // Bitwise-AND the values in registerA and registerB, then store the result in registerA.
+    cpu->registers[regA] = cpu->registers[regA] & cpu->registers[regB] & 0xFF;
+    break;
   case ALU_CMP:
+    // only handles equivalency currently
     // R4 -> E flag
     if (cpu->registers[regA] == cpu->registers[regB])
     {
@@ -114,6 +116,17 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     {
       cpu->registers[4] = 0;
     }
+    break;
+  case ALU_MUL:
+    cpu->registers[regA] = (cpu->registers[regA] * cpu->registers[regB]) & 0xFF;
+    break;
+  case ALU_OR:
+    // Perform a bitwise-OR between the values in registerA and registerB, storing the result in registerA.
+    cpu->registers[regA] = (cpu->registers[regA] | cpu->registers[regB]) & 0xFF;
+    break;
+  case ALU_XOR:
+    // Perform a bitwise-XOR between the values in registerA and registerB, storing the result in registerA.
+    cpu->registers[regA] = (cpu->registers[regA] ^ cpu->registers[regB]) & 0xFF;
     break;
   }
 }
