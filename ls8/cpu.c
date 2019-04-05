@@ -102,7 +102,19 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
     break;
   case ALU_ADD:
     cpu->registers[regA] = (cpu->registers[regA] + cpu->registers[regB]) & 0xFF;
-    // TODO: implement more ALU ops
+    break;
+  // only handles equivalency currently
+  case ALU_CMP:
+    // R4 -> E flag
+    if (cpu->registers[regA] = cpu->registers[regB])
+    {
+      cpu->registers[4] = 1;
+    }
+    else
+    {
+      cpu->registers[4] = 0;
+    }
+    break;
   }
 }
 
@@ -163,6 +175,15 @@ void cpu_run(struct cpu *cpu)
       cpu->PC = cpu->registers[operandA] - countOperands - 1;
       cpu->registers[4] = cpu->PC;
 
+      break;
+
+    // CMP registerA registerB
+    // Compare the values in two registers.
+    // If they are equal, set the Equal E flag to 1, otherwise set it to 0.
+    // If registerA is less than registerB, set the Less-than L flag to 1, otherwise set it to 0.
+    // If registerA is greater than registerB, set the Greater-than G flag to 1, otherwise set it to 0.
+    case CMP:
+      alu(cpu, ALU_CMP, operandA, operandB);
       break;
 
     // exit process
