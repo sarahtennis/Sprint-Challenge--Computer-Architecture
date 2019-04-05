@@ -22,7 +22,11 @@ enum alu_op
   ALU_CMP,
   ALU_AND,
   ALU_OR,
-  ALU_XOR
+  ALU_XOR,
+  ALU_NOT,
+  ALU_SHL,
+  ALU_SHR,
+  ALU_MOD
 };
 
 // Instructions

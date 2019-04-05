@@ -95,7 +95,7 @@ void cpu_ram_write(struct cpu *cpu, unsigned char index, unsigned char value)
  */
 void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB)
 {
-  // XOR NOT SHL SHR MOD
+  // MOD
   switch (op)
   {
   case ALU_ADD:
@@ -117,12 +117,37 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
       cpu->registers[4] = 0;
     }
     break;
+  case ALU_MOD:
+    // Divide the value in the first register by the value in the second, storing the remainder of the result in registerA.
+    // If the value in the second register is 0, the system should print an error message and halt.
+    if (cpu->registers[regB] != 0)
+    {
+      cpu->registers[regA] %= cpu->registers[regB];
+    }
+    else
+    {
+      fprintf(stderr, "Error: cannot divide by 0");
+      exit(2);
+    }
+    break;
   case ALU_MUL:
     cpu->registers[regA] = (cpu->registers[regA] * cpu->registers[regB]) & 0xFF;
+    break;
+  case ALU_NOT:
+    //Perform a bitwise-NOT on the value in a register.
+    cpu->registers[regA] = ~(cpu->registers[regA]);
     break;
   case ALU_OR:
     // Perform a bitwise-OR between the values in registerA and registerB, storing the result in registerA.
     cpu->registers[regA] = (cpu->registers[regA] | cpu->registers[regB]) & 0xFF;
+    break;
+  case ALU_SHL:
+    // Shift the value in registerA left by the number of bits specified in registerB, filling the low bits with 0.
+    cpu->registers[regA] = (cpu->registers[regA] << cpu->registers[regB]) & 0xFF;
+    break;
+  case ALU_SHR:
+    // Shift the value in registerA right by the number of bits specified in registerB, filling the high bits with 0.
+    cpu->registers[regA] = (cpu->registers[regA] >> cpu->registers[regB]) & 0xFF;
     break;
   case ALU_XOR:
     // Perform a bitwise-XOR between the values in registerA and registerB, storing the result in registerA.
