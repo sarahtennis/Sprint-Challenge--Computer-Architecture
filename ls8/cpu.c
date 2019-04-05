@@ -71,7 +71,7 @@ void cpu_load(struct cpu *cpu, int argc, char **argv)
   fclose(fp);
 
   // initialize PC
-  cpu->registers[4] = cpu->PC;
+  // cpu->registers[4] = cpu->PC;
 }
 
 /**
@@ -106,7 +106,7 @@ void alu(struct cpu *cpu, enum alu_op op, unsigned char regA, unsigned char regB
   // only handles equivalency currently
   case ALU_CMP:
     // R4 -> E flag
-    if (cpu->registers[regA] = cpu->registers[regB])
+    if (cpu->registers[regA] == cpu->registers[regB])
     {
       cpu->registers[4] = 1;
     }
@@ -129,7 +129,7 @@ void cpu_run(struct cpu *cpu)
   {
     // Get the value of the current instruction
     // (in address PC).
-    unsigned char currentPC = cpu->registers[4];
+    unsigned char currentPC = cpu->PC;
     unsigned char instruction = cpu->ram[currentPC];
     // printf("PC: %d - instruction: %x\n", currentPC, instruction);
     // break;
@@ -173,7 +173,7 @@ void cpu_run(struct cpu *cpu)
 
       // move to instruction from value in register
       cpu->PC = cpu->registers[operandA] - countOperands - 1;
-      cpu->registers[4] = cpu->PC;
+      // cpu->registers[4] = cpu->PC;
 
       break;
 
@@ -189,6 +189,11 @@ void cpu_run(struct cpu *cpu)
     // exit process
     case HLT:
       running = 0;
+      break;
+
+    // Set the PC to the address stored in the given register.
+    case JMP:
+      cpu->PC = (cpu->registers[operandA]) - 1 - countOperands;
       break;
 
     // Set value of register (operandA) to integer (operandB)
@@ -227,7 +232,7 @@ void cpu_run(struct cpu *cpu)
     // Pop the value from the top of the stack and store it in the PC.
     case RET:
       cpu->PC = cpu->registers[7];
-      cpu->registers[4] = cpu->PC;
+      // cpu->registers[4] = cpu->PC;
       cpu->registers[7]++;
       break;
 
@@ -239,7 +244,7 @@ void cpu_run(struct cpu *cpu)
 
     // Move the PC to the next instruction.
     cpu->PC = (cpu->PC) + countOperands + 1;
-    cpu->registers[4] = cpu->PC;
+    // cpu->registers[4] = cpu->PC;
   }
 }
 
